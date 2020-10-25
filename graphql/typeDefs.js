@@ -45,11 +45,23 @@ module.exports = gql`
     createPost(body: String!): Post!
     deletePost(postId: ID!): String!
     createComment(postId: String!, body: String!): Post!
+    updatePost(postId: ID!, body : String!):Post!
     deleteComment(postId: ID!, commentId: ID!): Post!
     likePost(postId: ID!): Post!
   }
   type Subscription {
     newPost: Post!
+    comment(postId: ID!): CommentSubscriptionPayload!
   }
+
+  enum Mutate_Enum{
+    CREATED,
+    UPDATED,
+    DELETED
+}
+  type CommentSubscriptionPayload {
+    mutation: Mutate_Enum!
+    data: Post!
+}
 `;
 //mongodb+srv://SUBHRA:eutsI6OrrAtXNyHo@cluster0.ompsv.mongodb.net/devconnector?retryWrites=true&w=majority

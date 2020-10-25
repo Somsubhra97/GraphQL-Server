@@ -23,7 +23,14 @@ module.exports = {
           username,
           createdAt: new Date().toISOString()
         });
-        await post.save();
+
+      await post.save();
+      context.pubsub.publish(`COMMENT_SUB`, {
+            comment: {
+                mutation: 'CREATED',
+                data: post
+            }
+        })
         return post;
       } else throw new UserInputError('Post not found');
     },
@@ -41,12 +48,34 @@ module.exports = {
         if (post.comments[commentIndex].username === username) {
           post.comments.splice(commentIndex, 1);
           await post.save();
+
+          context.pubsub.publish(`COMMENT_SUB`, {
+            comment: {
+                mutation: 'DELETED',
+                data: post
+            }
+        });
+
           return post;
         } else {
           throw new AuthenticationError('Action not allowed');
         }
       } else {
         throw new UserInputError('Post not found');
+      }
+    }
+  },
+
+  Subscription:{
+   comment: {
+      subscribe(parent, { postId }, { pubsub }, info){
+          const post = Post.findById(postId);
+
+          if (!post) {
+              throw new Error('Post not found')
+          }
+
+          return pubsub.asyncIterator(`COMMENT_SUB`)
       }
     }
   }

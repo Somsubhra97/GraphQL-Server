@@ -27,6 +27,25 @@ module.exports = {
     }
   },
   Mutation: {
+    async updatePost(_,{postId,body},context){
+      const user = checkAuth(context);
+
+      if (body.trim() === '') {
+        throw new Error('Post body must not be empty');
+      }
+      let post=Post.findById(postId);
+
+       if (!post) {
+        throw new Error('Post not found');
+      }
+     post= Post.findOneAndUpdate(postId,{
+        body,
+        createdAt: new Date().toISOString()
+      },{new:true});
+
+     return post;
+    },
+
     async createPost(_, { body }, context) {
       const user = checkAuth(context);
 
