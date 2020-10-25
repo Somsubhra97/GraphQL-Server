@@ -43,6 +43,9 @@ module.exports = {
         createdAt: new Date().toISOString()
       },{new:true});
 
+     context.pubsub.publish('POST_UPDATED', {
+        updatePost: post
+      });
      return post;
     },
 
@@ -102,11 +105,27 @@ module.exports = {
         await post.save();
         return post;
       } else throw new UserInputError('Post not found');
+    },
+    async deleteAll(){
+     const x=await Post.deleteMany({username: 'somsubhra'})
+     console.log(x);
+     return 'SUCCESS';
     }
   },
   Subscription: {
     newPost: {
       subscribe: (_, __, { pubsub }) => pubsub.asyncIterator('NEW_POST')
+    },
+    updatePost:{
+      subscribe(parent, { postId }, { pubsub }, info){
+          const post = Post.findById(postId);
+
+          if (!post) {
+              throw new Error('Post not found')
+          }
+
+          return pubsub.asyncIterator(`POST_UPDATED`);
+      }
     }
   }
 };
