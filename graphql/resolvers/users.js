@@ -51,6 +51,14 @@ module.exports = {
         token
       };
     },
+    async deleteUser(_,{userId}){
+      const x=await User.findById(userId);
+      if(x){
+        x.remove();
+        return 'SUCCESS'
+      }
+      return 'FAILURE'
+    },
     async register(
       _,
       { username, email, password, confirmPassword }

@@ -1,13 +1,16 @@
 const { AuthenticationError, UserInputError } = require('apollo-server');
 
 const Post = require('../../models/Post');
+const User= require('../../models/User');
 const checkAuth = require('../../util/check-auth');
 
 module.exports = {
   Query: {
     async getPosts() {
       try {
-        const posts = await Post.find().sort({ createdAt: -1 });
+        const posts = await Post.find().sort({ createdAt: -1 }).populate({
+          path: 'user', model: User
+        })
         return posts;
       } catch (err) {
         throw new Error(err);
@@ -22,6 +25,18 @@ module.exports = {
           throw new Error('Post not found');
         }
       } catch (err) {
+        throw new Error(err);
+      }
+    },
+    async getUser(_,{userId}){
+      try{
+        const user= await User.findById(userId);
+        if(user){
+          return user;
+        }
+        throw new Error("User not found");
+      }
+      catch(err){
         throw new Error(err);
       }
     }
@@ -64,6 +79,13 @@ module.exports = {
       });
 
       const post = await newPost.save();
+      const x=await User.findById(user.id);
+
+      if(x){
+        x.posts.push(post.id);
+        await x.save();
+
+      }
 
       context.pubsub.publish('NEW_POST', {
         newPost: post
@@ -106,9 +128,8 @@ module.exports = {
         return post;
       } else throw new UserInputError('Post not found');
     },
-    async deleteAll(){
-     const x=await Post.deleteMany({username: 'somsubhra'})
-     console.log(x);
+    async deleteAll(_,{username}){
+     const x=await Post.deleteMany({username});
      return 'SUCCESS';
     }
   },

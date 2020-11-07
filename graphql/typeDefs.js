@@ -5,6 +5,7 @@ module.exports = gql`
     id: ID!
     body: String!
     createdAt: String!
+    user:User!
     username: String!
     comments: [Comment]!
     likes: [Like]!
@@ -27,23 +28,26 @@ module.exports = gql`
     email: String!
     token: String!
     username: String!
-    createdAt: String!
+    createdAt: String!,
+    posts:[Post]!
   }
 
   type Query {
     getPosts: [Post]
     getPost(postId: ID!): Post
+    getUser(userId:ID!):User
   }
   type Mutation {
     register(username: String!, email: String!,password: String!,confirmPassword: String! ): User!
     login(username: String!, password: String!): User!
+    deleteUser(userId:ID!):String!
     createPost(body: String!): Post!
     deletePost(postId: ID!): String!
     createComment(postId: String!, body: String!): Post!
     updatePost(postId: ID!, body : String!):Post!
     deleteComment(postId: ID!, commentId: ID!): Post!
     likePost(postId: ID!): Post!
-    deleteAll:String!
+    deleteAll(username: String!):String!
   }
   type Subscription {
     newPost: Post!
