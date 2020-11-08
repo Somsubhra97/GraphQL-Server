@@ -31,6 +31,7 @@ module.exports = {
     async getUser(_,{userId}){
       try{
         const user= await User.findById(userId);
+        console.log('hi',user.posts)
         if(user){
           return user;
         }
@@ -82,7 +83,7 @@ module.exports = {
       const x=await User.findById(user.id);
 
       if(x){
-        x.posts.push(post.id);
+        x.posts.push(post);
         await x.save();
 
       }

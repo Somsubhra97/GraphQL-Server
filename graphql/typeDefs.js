@@ -29,7 +29,7 @@ module.exports = gql`
     token: String!
     username: String!
     createdAt: String!,
-    posts:[Post]!
+    posts:Post!
   }
 
   type Query {
