@@ -19,6 +19,7 @@ module.exports = {
 
       if (post) {
         post.comments.unshift({
+          post,
           body,
           username,
           createdAt: new Date().toISOString()

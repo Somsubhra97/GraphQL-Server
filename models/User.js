@@ -1,4 +1,6 @@
 const { model, Schema } = require('mongoose');
+const mongoose = require('mongoose');
+const {Post}=require('./Post')
 
 const userSchema = new Schema({
   username: String,
@@ -7,8 +9,8 @@ const userSchema = new Schema({
   createdAt: String,
   posts: [
   {
-    type: Schema.Types.ObjectId,
-    ref: 'post'
+    type: mongoose.Schema.ObjectId,
+    ref: 'Post'
   }
 ]
 });
