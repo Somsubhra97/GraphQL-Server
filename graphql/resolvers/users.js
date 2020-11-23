@@ -45,6 +45,7 @@ module.exports = {
 
       const token = generateToken(user);
 
+
       return {
         ...user._doc,
         id: user._id,
@@ -55,6 +56,7 @@ module.exports = {
       const x=await User.findById(userId);
       if(x){
         x.remove();
+        await x.save();
         return 'SUCCESS'
       }
       return 'FAILURE'
@@ -95,6 +97,7 @@ module.exports = {
       const res = await newUser.save();
 
       const token = generateToken(res);
+      console.log(token);
 
       return {
         ...res._doc,

@@ -128,7 +128,7 @@ module.exports = {
         return post;
       } else throw new UserInputError('Post not found');
     },
-    async deleteAll(_,{username}){
+    async deleteManyPosts(_,{username}){
      const x=await Post.deleteMany({username});
      return 'SUCCESS';
     }
